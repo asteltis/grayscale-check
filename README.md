@@ -5,7 +5,7 @@
 ![PixPin_2024-04-26_16-16-39](https://github.com/asteltis/grayscale-check/assets/145424226/9a436ce6-12eb-4ca2-bcf2-d9d754c0e070)
 # 使用方法
 ## Windows
-1. 安装： 第一次使用需要安装python（https://www.python.org/），然后运行Dependency.py安装依赖库。
+1. 安装： 第一次使用需要安装python（ https://www.python.org ），然后运行Dependency.py安装依赖库。
 2. 启动： 运行grayscale check.py后，将让你选择一个区域。
 3. 选择区域： 通过鼠标拖动来选择一个屏幕区域，然后按 Enter 或 Space 确认。
 4. 查看实时图像： 选定区域后，一个新窗口将会出现并显示该区域的实时黑白图像。
