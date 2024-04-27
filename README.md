@@ -6,7 +6,7 @@
 # 使用方法
 ## Windows
 1. 下载： 右侧Release下载grayscale check.exe。
-2. 启动： 运行grayscale check.exe后，将让你选择一个区域。
+2. 启动： 运行grayscale check.exe。
 3. 选择区域： 通过鼠标拖动来选择一个屏幕区域，然后按 Enter 或 Space 确认。
 4. 查看实时图像： 选定区域后，一个新窗口将会显示该区域的实时黑白图像。
 # 注意事项
