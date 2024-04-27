@@ -2,7 +2,7 @@
 能够实时检查黑白灰关系，支持csp(Clip Studio Paint)、sai2（PaintTool SAI2）等。
 # 功能
 实时显示黑白灰： 用户选定区域后，将新建一个窗口实时显示选定区域的黑白灰。
-![PixPin_2024-04-26_16-16-39](https://github.com/asteltis/grayscale-check/assets/145424226/9a436ce6-12eb-4ca2-bcf2-d9d754c0e070)
+![Uploading PixPin_2024-04-27_11-36-12.png…]()
 # 使用方法
 ## Windows
 1. 下载： 下载grayscale check.exe
