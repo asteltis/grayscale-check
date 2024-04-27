@@ -18,7 +18,7 @@ class GrayscaleApp:
         self.window = tk.Tk()
         self.window.title("Real-time Grayscale View")
         self.window.attributes('-topmost', True)  # 设置主窗口始终置顶
-        self.window.minsize(width=230, height=40)  # 设置主窗口的最小尺寸
+        self.window.minsize(width=220, height=40)  # 设置主窗口的最小尺寸
 
         self.label = tk.Label(self.window)
         self.label.pack(expand=True, fill=tk.BOTH)
@@ -27,9 +27,9 @@ class GrayscaleApp:
         self.control_window = tk.Toplevel(self.window)
         self.control_window.title("Control Panel")
         self.control_window.attributes('-topmost', False)  # 取消控制面板的置顶
-        self.control_window.minsize(width=230, height=40)  # 设置控制面板的最小尺寸
+        self.control_window.minsize(width=220, height=40)  # 设置控制面板的最小尺寸
 
-        self.scale = tk.Scale(self.control_window, from_=0.5, to=2.0, resolution=0.1, orient=tk.HORIZONTAL, label="Scale Image")
+        self.scale = tk.Scale(self.control_window, from_=0.5, to=2.5, resolution=0.1, orient=tk.HORIZONTAL, label="Scale Image")
         self.scale.pack(fill=tk.X)
         self.scale.set(1)  # 默认比例是1
         self.scale.bind("<ButtonRelease-1>", self.handle_scale_change)
@@ -62,6 +62,7 @@ class GrayscaleApp:
                 gray_img = cv2.cvtColor(np.array(img), cv2.COLOR_BGRA2GRAY)
                 self.image = Image.fromarray(gray_img)
             self.refresh_image()
+            self.window.after(800, self.update_image)
 
     def refresh_image(self):
         if self.image:
