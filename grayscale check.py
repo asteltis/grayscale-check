@@ -43,7 +43,11 @@ class ConfigManager:
                 'main_window_x': '100',
                 'main_window_y': '100',
                 'control_window_x': '200',
-                'control_window_y': '200'
+                'control_window_y': '200',
+                'monitor_top': '0',
+                'monitor_left': '0',
+                'monitor_width': '0',
+                'monitor_height': '0'
             }
             self.save_settings()
 
@@ -63,8 +67,26 @@ class ConfigManager:
 
 # 截图管理类
 class ScreenshotManager:
-    def __init__(self):
-        self.monitor = None
+    def __init__(self, config_manager: ConfigManager):
+        self.config_manager = config_manager
+        self.monitor = self.load_monitor_from_config()
+
+    def load_monitor_from_config(self) -> Optional[Dict[str, int]]:
+        top = int(self.config_manager.get('Settings', 'monitor_top', '0'))
+        left = int(self.config_manager.get('Settings', 'monitor_left', '0'))
+        width = int(self.config_manager.get('Settings', 'monitor_width', '0'))
+        height = int(self.config_manager.get('Settings', 'monitor_height', '0'))
+        if width > 0 and height > 0:
+            return {"top": top, "left": left, "width": width, "height": height}
+        return None
+
+    def save_monitor_to_config(self):
+        if self.monitor:
+            self.config_manager.set('Settings', 'monitor_top', str(self.monitor['top']))
+            self.config_manager.set('Settings', 'monitor_left', str(self.monitor['left']))
+            self.config_manager.set('Settings', 'monitor_width', str(self.monitor['width']))
+            self.config_manager.set('Settings', 'monitor_height', str(self.monitor['height']))
+            self.config_manager.save_settings()
 
     def select_area(self) -> Optional[Dict[str, int]]:
         with mss.mss() as sct:
@@ -77,6 +99,7 @@ class ScreenshotManager:
             cv2.destroyAllWindows()
             if area[2] and area[3]:
                 self.monitor = {"top": int(area[1]), "left": int(area[0]), "width": int(area[2]), "height": int(area[3])}
+                self.save_monitor_to_config()
         return self.monitor
 
     def get_screenshot(self) -> Optional[np.ndarray]:
@@ -91,7 +114,7 @@ class ScreenshotManager:
 class GrayscaleApp:
     def __init__(self):
         self.config_manager = ConfigManager()
-        self.screenshot_manager = ScreenshotManager()
+        self.screenshot_manager = ScreenshotManager(self.config_manager)
 
         self.refresh_rate = float(self.config_manager.get('Settings', 'refresh_rate', '1.0'))
         self.scale = float(self.config_manager.get('Settings', 'scale', '1.0'))
@@ -182,7 +205,7 @@ class GrayscaleApp:
         current_time = time.time()
         if current_time - self.last_update_time >= self.refresh_rate:
             self.last_update_time = current_time
-            if self.monitor:
+            if self.screenshot_manager.monitor:
                 img = self.screenshot_manager.get_screenshot()
                 if img is not None:
                     self.image = img
@@ -191,8 +214,8 @@ class GrayscaleApp:
 
     def refresh_image(self):
         if self.image is not None:
-            new_width = max(int(self.monitor['width'] * self.scale_slider.get()), MIN_WINDOW_WIDTH)
-            new_height = max(int(self.monitor['height'] * self.scale_slider.get()), MIN_WINDOW_HEIGHT)
+            new_width = max(int(self.screenshot_manager.monitor['width'] * self.scale_slider.get()), MIN_WINDOW_WIDTH)
+            new_height = max(int(self.screenshot_manager.monitor['height'] * self.scale_slider.get()), MIN_WINDOW_HEIGHT)
             resized_image = cv2.resize(self.image, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
             img_tk = ImageTk.PhotoImage(image=Image.fromarray(resized_image))
             self.label.imgtk = img_tk
@@ -213,6 +236,9 @@ class GrayscaleApp:
         self.update_image()
 
     def run(self):
+        if self.screenshot_manager.monitor:
+            self.window.deiconify()
+            self.update_image()
         self.window.mainloop()
 
     def on_main_window_close(self):
